@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\UserModel;
 
 class Register extends BaseController
 {
 
-public function register()
+    public function register()
     {
         if ($this->session->has('user')) {
             return redirect()->to('/dashboard');
@@ -18,14 +19,20 @@ public function register()
                 'email' => $this->request->getPost('email'),
                 'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT)
             ];
+
+            $user = $user_model->where('email', $data['email'])->first();
+
+            if ($user) {
+                return redirect()->back()->with('error', 'User  already registered with this email.');
+            }
+
             $result = $user_model->save($data);
             if ($result) {
-                    return redirect()->to('/login')->with('success', 'Registration successful! Please log in.');
+                return redirect()->to('/login')->with('success', 'Registration successful! Please log in.');
             } else {
                 return redirect()->back()->with('error', 'Failed to register. Please try again.');
             }
         }
         return view('register');
     }
-
 }

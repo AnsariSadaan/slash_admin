@@ -46,3 +46,5 @@
             <a href="/logout" class="text-white px-4 py-1 rounded-lg bg-red-600 inline-block">Logout</a>
         </div>
     </nav>
+
+    

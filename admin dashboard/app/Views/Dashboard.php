@@ -132,10 +132,6 @@
 
         </div>
 
-        
-        
-
-
         <!-- Edit User Modal -->
         <div id="editModal" class="absolute w-full m-auto flex bg-gray-500 bg-opacity-50 hidden h-screen justify-center items-center">
             <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
