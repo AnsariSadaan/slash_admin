@@ -1,56 +1,46 @@
 import { initCollection, initMongoDB } from "../config/db.js";
 
 
-// const sendMessage = async (req, res) => {
-//     const { name ,email, message } = req.body;
-//     try {
-//         const databaseName = await initMongoDB();
-//         const messageCollection = await initCollection(databaseName);
-        
-//         // Create a timestamp
-//         const timestamp = new Date(); // Current date and time
-//         const post = {
-//             name, email, message, timestamp
-//           };
-//         // Insert the message along with the timestamp
-//         const result = await messageCollection.insertOne(post);
-        
-//         if (!result.acknowledged) {
-//             return res.status(400).json({ message: 'Error sending message' });
-//         }
-        
-//         return res.status(200).json({ message: 'Message sent successfully' });
-        
-//     } catch (err) {
-//         console.log(err);
-//         return res.status(500).json({ message: "Internal Server Error" });
-//     }
-// };
-
-
 const sendMessage = async (req, res) => {
     const { sender, receiver, message } = req.body;
     try {
         const databaseName = await initMongoDB();
         const messageCollection = await initCollection(databaseName);
-
         // Create a timestamp
         const timestamp = new Date();
+        // Check if a document for this pair of users exists
+        const conversation = await messageCollection.findOne({
+            participants: { $all: [sender, receiver] },
+        });
 
-        // Insert the message along with sender and receiver details
-        const result = await messageCollection.insertOne({ sender, receiver, message, timestamp });
-
-        if (!result.acknowledged) {
-            return res.status(400).json({ message: 'Error sending message' });
+        if (conversation) {
+            const result = await messageCollection.updateOne(
+                { _id: conversation._id },
+                {
+                    $push: {
+                        messages: { sender, receiver, message, timestamp },
+                    },
+                }
+            );
+            if (!result.acknowledged) {
+                return res.status(400).json({ message: 'Error sending message' });
+            }
+        } else {
+            // Create a new conversation document
+            const result = await messageCollection.insertOne({
+                participants: [sender, receiver],
+                messages: [{ sender, receiver, message, timestamp }],
+            });
+            if (!result.acknowledged) {
+                return res.status(400).json({ message: 'Error creating conversation' });
+            }
         }
-
         return res.status(200).json({ message: 'Message sent successfully' });
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-
 
 export const getMessage = async (req, res) => {
     const { sender, receiver } = req.body;
@@ -58,36 +48,21 @@ export const getMessage = async (req, res) => {
         const databaseName = await initMongoDB();
         const messageCollection = await initCollection(databaseName);
 
-        // Fetch messages where sender and receiver match
-        const result = await messageCollection.find({
-            $or: [
-                { sender, receiver },
-                { sender: receiver, receiver: sender }
-            ]
-        }).sort({ timestamp: 1 }).toArray();
+        // Fetch the conversation between sender and receiver
+        const conversation = await messageCollection.findOne({
+            participants: { $all: [sender, receiver] },
+        });
 
-        return res.status(200).json({ messages: result });
+        if (!conversation) {
+            return res.status(200).json({ messages: [] }); // No messages yet
+        }
+
+        return res.status(200).json({ messages: conversation.messages });
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-
-// export const getMessage = async (req, res) => {
-//     const { from } = req.body;
-//     try {
-//         const databaseName = await initMongoDB();
-//         const messageCollection = await initCollection(databaseName);
-        
-        
-//         const result = await messageCollection.find({ sender: from }).toArray();
-        
-//         return res.status(200).json({ messages: result });
-//     } catch (err) {
-//         console.log(err);
-//         return res.status(500).json({ message: "Internal Server Error" });
-//     }
-// }
 
 
 export default sendMessage;

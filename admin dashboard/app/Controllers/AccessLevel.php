@@ -33,7 +33,7 @@ class AccessLevel extends BaseController
             $user->roles = $newRole;
             $this->userModel->save($user);
         }
-        // Redirect back to the access level page
+                // Redirect back to the access level page
         return redirect()->to('/accesslevel');
     }
 }

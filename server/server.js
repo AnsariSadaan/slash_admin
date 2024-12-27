@@ -29,38 +29,22 @@ const startServer = async () => {
     });
 
     io.on("connection", (socket) => {
-      socket.on("join",  (data)=> {
+      socket.on("join", (data) => {
           console.log(`${data.email} joined`);
           socket.join(data.email);
       });
   
       socket.on("send_message", (data) => {
           const { sender, receiver, message } = data;
-          // Emit message to the receiver
-          io.to(receiver).emit("receive_message", { sender, message, timestamp: new Date() });
+  
+          // Emit the message to the receiver
+          socket.to(receiver).emit("receive_message", {
+              sender,
+              message,
+              timestamp: new Date(),
+          });
       });
   });
-
-    // io.on("connection", (socket) => {
-    //   console.log("New client connected:", socket.id);
-    //   socket.on("join", (data) => {
-    //     if (data?.data) {
-    //       console.log("Joining room:", data.data);
-    //       socket.join(data.data);
-    //     } else {
-    //       console.error("Invalid join data:", data);
-    //     }
-    //   });
-    //   // Broadcast message to all connected clients
-    //   socket.on("send_message", (data) => {
-    //     if (data?.message) {
-    //       console.log("Broadcasting message:", data.message);
-    //       io.emit("receive_message", data.message); // This sends the message to all connected clients
-    //     } else {
-    //       console.error("Invalid message data:", data);
-    //     }
-    //   });
-    // });
   } catch (error) {
     console.error("Error starting server:", error.message);
     process.exit(1);
