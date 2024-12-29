@@ -49,5 +49,5 @@ class AccessLevelModel extends Model
     public function getAllRoles(){
         return $this->findAll();
     }
-
+    
 }
