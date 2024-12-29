@@ -9,7 +9,7 @@ class AccessLevelModel extends Model
     protected $table            = 'access_level';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'object';
+    protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = ['roles'];
@@ -43,4 +43,11 @@ class AccessLevelModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+
+
+    public function getAllRoles(){
+        return $this->findAll();
+    }
+
 }

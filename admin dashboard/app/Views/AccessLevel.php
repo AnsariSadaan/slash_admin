@@ -25,10 +25,11 @@
                         <td class="px-4 py-2 text-center">
                             <form action="/update-role/<?php echo $user->id; ?>" method="POST">
                                 <select name="roles" class="px-4 py-2" onchange="this.form.submit()">
-                                    <option value="admin" <?php echo ($user->roles === 'admin') ? 'selected' : ''; ?>>Admin</option>
-                                    <option value="user" <?php echo ($user->roles === 'user') ? 'selected' : ''; ?>>User</option>
-                                    <option value="teamLeader" <?php echo ($user->roles === 'teamLeader') ? 'selected' : ''; ?>>Team Leader</option>
-                                    <option value="superVisor" <?php echo ($user->roles === 'superVisor') ? 'selected' : ''; ?>>Supervisor</option>
+                                    <?php foreach ($roles as $role): ?>
+                                        <option value="<?= $role['roles']; ?>" <?php echo ($user->roles === $role['roles']) ? 'selected' : ''; ?>>
+                                            <?= ucfirst($role['roles']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                             </form>
                         </td>
@@ -37,12 +38,5 @@
             </tbody>
         </table>
         <!-- Table End -->
-
-        <!-- Pagination (if needed) -->
-        <div class="flex justify-center mt-6">
-            <nav aria-label="Page navigation">
-                <!-- Pagination links code here (if required) -->
-            </nav>
-        </div>
     </div>
 </div>

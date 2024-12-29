@@ -16,37 +16,15 @@ class Campaign extends BaseController
         // Pagination setup
         $page = $this->request->getVar('page') ?? 1; // Default to page 1 if no page is set
         $perPage = 2; // Define how many users per page
-        $offset = ($page - 1) * $perPage; // Offset for the SQL query
-
         // Get search query from URL
         $searchQuery = $this->request->getVar('searchQuery') ?? '';
-
-        // Apply search filter
-        if ($searchQuery) {
-            // If search query is set, filter by name (or other fields)
-            $campaign = $campaign_model
-                ->like('name', $searchQuery)
-                ->orderBy('id', 'ASC')
-                ->findAll($perPage, $offset);
-        } else {
-            $campaign = $campaign_model
-                ->orderBy('id', 'ASC')
-                ->findAll($perPage, $offset);
-        }
-
-        // Get the total number of users for pagination
-        $totalUsers = $campaign_model->countAll();
-
-        // Calculate the number of pages
-        $totalPages = ceil($totalUsers / $perPage);
-
+        $campaignData = $campaign_model->getCampaigns($page, $perPage, $searchQuery);        
         $mainContent = view('showCampaign', [
-            'campaign' => $campaign,
-            'totalPages' => $totalPages,
+            'campaign' => $campaignData['campaigns'],
+            'totalPages' => $campaignData['totalPages'],
             'currentPage' => $page,
             'searchQuery' => $searchQuery,
         ]);
-
         return view('Template', ['mainContent' => $mainContent]);
     }
 
@@ -82,7 +60,7 @@ class Campaign extends BaseController
         ];
 
         // Insert data into the database
-        if ($model->insert($data)) {
+        if ($model->insertCampaign($data)) {
             return redirect()
                 ->to('campaign')
                 ->with('success', 'Campaign added successfully.');
@@ -97,10 +75,8 @@ class Campaign extends BaseController
     public function updateCampaign()
     {
         $campaign_model = new CampaignModel();
-
         // Get the submitted data
         $id = $this->request->getPost('id');
-        // print( $mongoId) ; die;// Get MongoDB ID from form
         $name = $this->request->getPost('name');
         $description = $this->request->getPost('description');
         $client = $this->request->getPost('client');
@@ -118,7 +94,7 @@ class Campaign extends BaseController
         }
 
         // Step 1: Update the user in MySQL
-        $campaign_model->update($id, $updatedData);
+        $campaign_model->updateCampaignById($id, $updatedData);
         return redirect()
             ->to('/showCampaign')
             ->with('success', 'user details updated successfully');
@@ -127,9 +103,7 @@ class Campaign extends BaseController
     public function deleteCampaign($id)
     {
         $campaign_model = new CampaignModel();
-
-        // Delete the user from the relational database (MySQL, etc.)
-        $result = $campaign_model->delete($id);
+        $campaign_model->deleteCampaignById($id);
 
         return redirect()
             ->to('/showCampaign')

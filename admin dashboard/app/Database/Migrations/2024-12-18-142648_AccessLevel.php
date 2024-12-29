@@ -17,13 +17,23 @@ class AccessLevel extends Migration
             ],
             'roles' => [
                 'type' => 'ENUM',
-                'constraint' => ['admin','user', 'teamLeader', 'superVisor'],
+                'constraint' => ['admin', 'supervisor', 'teamLeader', 'user'],
                 'null' => false,
-                'default' => 'admin' // Optional: Set a default role
             ],
         ]);
+
         $this->forge->addPrimaryKey('id');
         $this->forge->createTable('access_level');
+
+        // Insert predefined roles
+        $db = \Config\Database::connect();
+        $builder = $db->table('access_level');
+
+        $builder->insertBatch([
+            ['id' => 1, 'roles' => 'admin'],
+            ['id' => 2, 'roles' => 'supervisor'],
+            ['id' => 3, 'roles' => 'teamLeader'],
+        ]);
     }
 
     public function down()

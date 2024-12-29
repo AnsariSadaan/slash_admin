@@ -18,6 +18,9 @@ class UserModel extends Model
     protected $updatedField  = 'updated_at';
 
 
+    public function getAllUsers(){
+        return $this->findAll();
+    }
     /**
      * Check if a user exists with the given email.
      */

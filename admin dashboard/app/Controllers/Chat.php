@@ -9,6 +9,9 @@ class Chat extends BaseController
 {
     public function chat()
     {
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
         // Fetch users from the database
         $userModel = new UserModel(); // Create an instance of the User model
         $users = $userModel->findAll(); // Retrieve all users

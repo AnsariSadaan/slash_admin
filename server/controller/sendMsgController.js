@@ -9,31 +9,18 @@ const sendMessage = async (req, res) => {
         // Create a timestamp
         const timestamp = new Date();
         // Check if a document for this pair of users exists
-        const conversation = await messageCollection.findOne({
-            participants: { $all: [sender, receiver] },
-        });
+        const newMessage = {
+            participants: [sender, receiver],
+            sender,
+            receiver,
+            message,
+            timestamp,
+        };
 
-        if (conversation) {
-            const result = await messageCollection.updateOne(
-                { _id: conversation._id },
-                {
-                    $push: {
-                        messages: { sender, receiver, message, timestamp },
-                    },
-                }
-            );
-            if (!result.acknowledged) {
-                return res.status(400).json({ message: 'Error sending message' });
-            }
-        } else {
-            // Create a new conversation document
-            const result = await messageCollection.insertOne({
-                participants: [sender, receiver],
-                messages: [{ sender, receiver, message, timestamp }],
-            });
-            if (!result.acknowledged) {
-                return res.status(400).json({ message: 'Error creating conversation' });
-            }
+        const result = await messageCollection.insertOne(newMessage);
+
+        if (!result.acknowledged) {
+            return res.status(400).json({ message: 'Error sending message' });
         }
         return res.status(200).json({ message: 'Message sent successfully' });
     } catch (err) {
@@ -48,16 +35,17 @@ export const getMessage = async (req, res) => {
         const databaseName = await initMongoDB();
         const messageCollection = await initCollection(databaseName);
 
-        // Fetch the conversation between sender and receiver
-        const conversation = await messageCollection.findOne({
-            participants: { $all: [sender, receiver] },
-        });
+        // fetch all message between sender and receiver
+        const message = await messageCollection.find({
+            participants: {$all: [sender, receiver]},
+        }).sort({timestamp: 1}).toArray();
+        
 
-        if (!conversation) {
+        if (!message.length) {
             return res.status(200).json({ messages: [] }); // No messages yet
         }
 
-        return res.status(200).json({ messages: conversation.messages });
+        return res.status(200).json({ messages: message });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: 'Internal Server Error' });
