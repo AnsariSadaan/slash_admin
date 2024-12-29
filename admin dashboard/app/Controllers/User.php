@@ -3,16 +3,19 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\AccessLevelModel;
 use App\Models\UserModel;
 
 class User extends BaseController
 {
     protected $userModel;
+    protected $accessLevelModel;
 
     public function __construct()
     {
         // Load the User model
         $this->userModel = new UserModel();
+        $this->accessLevelModel = new AccessLevelModel();
     }
 
     public function dashboard()
@@ -20,16 +23,18 @@ class User extends BaseController
         if (!$this->session->has('user')) {
             return redirect()->to('/login');
         }
-        $user_model = new UserModel();
         // Get pagination and search parameters
         $page = $this->request->getVar('page') ?? 1; // Default to page 1 if no page is set
         $perPage = 2; // Define how many users per page
         $searchQuery = $this->request->getVar('searchQuery') ?? '';
 
         // Fetch data using the model
-        $users = $user_model->getPaginatedUsers($searchQuery, $page, $perPage);
-        $totalUsers = $user_model->countUsers($searchQuery);
+        $users = $this->userModel->getPaginatedUsers($searchQuery, $page, $perPage);
+        $totalUsers = $this->userModel->countUsers($searchQuery);
         $totalPages = ceil($totalUsers / $perPage);
+
+        // Fetch roles from the access_level table
+        $roles = $this->accessLevelModel->getAllRoles();
 
         // Construct mainContent
         $mainContent = view('dashboard', [
@@ -37,6 +42,7 @@ class User extends BaseController
             'totalPages' => $totalPages,
             'currentPage' => $page,
             'searchQuery' => $searchQuery,
+            'roles' => $roles, // Pass roles to the view
         ]);
 
         return view('Template', ['mainContent' => $mainContent]);
@@ -44,6 +50,11 @@ class User extends BaseController
 
     public function updateUser()
     {
+
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
+
         $user_model = new UserModel();
         // Get the submitted data
         $id = $this->request->getPost('id');
@@ -69,6 +80,11 @@ class User extends BaseController
 
     public function deleteUser($id)
     {
+
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
+
         $user_model = new UserModel();
 
         // Delete the user via the model

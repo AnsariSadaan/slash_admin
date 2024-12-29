@@ -11,6 +11,10 @@ class Campaign extends BaseController
 
     public function showCampaign()
     {
+
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
         $campaign_model = new CampaignModel();
 
         // Pagination setup
@@ -28,14 +32,28 @@ class Campaign extends BaseController
         return view('Template', ['mainContent' => $mainContent]);
     }
 
+
+
+
     public function addCampaign()
     {
-        $mainContent = view('campaign');
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
+
+        $mainContent = view('showCampaign');
         return view('Template', ['mainContent' => $mainContent]);
     }
 
+
+
+
     public function storeCampaign()
     {
+
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
         $model = new CampaignModel();
 
         // Validate the input
@@ -62,7 +80,7 @@ class Campaign extends BaseController
         // Insert data into the database
         if ($model->insertCampaign($data)) {
             return redirect()
-                ->to('campaign')
+                ->to('showCampaign')
                 ->with('success', 'Campaign added successfully.');
         } else {
             return redirect()
@@ -71,6 +89,9 @@ class Campaign extends BaseController
                 ->with('error', 'Failed to add campaign.');
         }
     }
+
+
+
 
     public function updateCampaign()
     {
@@ -99,6 +120,10 @@ class Campaign extends BaseController
             ->to('/showCampaign')
             ->with('success', 'user details updated successfully');
     }
+
+
+
+
 
     public function deleteCampaign($id)
     {

@@ -6,6 +6,7 @@
         <!-- Logout Link -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-semibold text-center text-gray-800">Campaign Details</h1>
+            <button id="addCampaign" onclick="openAddModal()">+</button>
         </div>
 
         <!-- Table Start -->
@@ -111,7 +112,7 @@
         <!-- pagination end -->
 
     </div>
-
+    
     <!-- Edit User Modal -->
     <div id="editModal" class="absolute w-full m-auto flex bg-gray-500 bg-opacity-50 hidden h-screen justify-center items-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
@@ -140,7 +141,40 @@
             </form>
         </div>
     </div>
+
+
+
+    <!-- add campaign modal -->
+<div id="addModal" class="absolute w-full m-auto flex bg-gray-500 bg-opacity-50 hidden h-screen justify-center items-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Edit User</h2>
+            <form id="addForm" action="<?= base_url('/campaign/store')?>" method="POST">
+                <?= csrf_field() ?>
+                <div class="mb-4">
+                    <label for="addName" class="block text-gray-700">Name</label>
+                    <input type="text" name="name" id="addName" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+                </div>
+                <div class="mb-4">
+                    <label for="addDescription" class="block text-gray-700">Description</label>
+                    <textarea type="description" name="description" id="addDescription" rows="2" class="w-full p-2 border border-gray-300 rounded mt-2" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="addClient" class="block text-gray-700">Client</label>
+                    <input type="client" name="client" id="addClient" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+                </div>
+                <div class="flex justify-between">
+                    <button type="button" onclick="closeAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Campaign</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+
+
+
+
 
 
 <script>
@@ -165,4 +199,14 @@
             window.location.href = '/delete-campaign/' + id;
         }
     }
+
+    function openAddModal() {
+        document.getElementById('addModal').classList.remove('hidden');
+    }
+
+    // Close the edit modal
+    function closeAddModal() {
+        document.getElementById('addModal').classList.add('hidden');
+    }
+
 </script>

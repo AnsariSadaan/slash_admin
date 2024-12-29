@@ -7,6 +7,8 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->match(['GET', 'POST'], '/register', 'Register::Register');
+$routes->match(['GET', 'POST'], '/adduser', 'Adduser::adduser');
+
 $routes->match(['GET', 'POST'], '/logout', 'Logout::Logout');
 $routes->match(['GET', 'POST'], '/login', 'Login::Login');
 
@@ -19,7 +21,7 @@ $routes->delete('/delete-user/(:num)', 'User::deleteUser/$1');
 
 
 
-$routes->get('/campaign', 'Campaign::addCampaign');
+// $routes->get('/campaign', 'Campaign::addCampaign');
 $routes->post('/campaign/store', 'Campaign::storeCampaign');
 $routes->get('/showCampaign', 'Campaign::showCampaign');
 $routes->post('/update-campaign', 'Campaign::updateCampaign');

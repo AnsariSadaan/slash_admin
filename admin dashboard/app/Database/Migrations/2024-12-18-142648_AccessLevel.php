@@ -33,6 +33,7 @@ class AccessLevel extends Migration
             ['id' => 1, 'roles' => 'admin'],
             ['id' => 2, 'roles' => 'supervisor'],
             ['id' => 3, 'roles' => 'teamLeader'],
+            ['id' => 4, 'roles' => 'user'],
         ]);
     }
 

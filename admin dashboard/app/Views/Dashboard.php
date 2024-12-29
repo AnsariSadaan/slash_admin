@@ -6,6 +6,7 @@
             <!-- Logout Link -->
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-semibold text-center text-gray-800">User Details</h1>
+                <button id="addUser" onclick="openAddModal()">+</button>
             </div>
 
             <!-- Table Start -->
@@ -20,27 +21,27 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($users as $row) {
+                    <?php foreach ($users as $user) {
                         // print_r($users); die;
                     ?>
 
                         <tr class="border-b">
-                            <td class="px-4 py-2 text-center"><?php echo $row->id; ?></td>
-                            <td class="px-4 py-2 text-center"><?php echo $row->name; ?></td>
-                            <td class="px-4 py-2 text-center"><?php echo $row->email; ?></td>
-                            <td class="px-4 py-2 text-center"><?php echo $row->roles; ?></td>
+                            <td class="px-4 py-2 text-center"><?php echo $user->id; ?></td>
+                            <td class="px-4 py-2 text-center"><?php echo $user->name; ?></td>
+                            <td class="px-4 py-2 text-center"><?php echo $user->email; ?></td>
+                            <td class="px-4 py-2 text-center"><?php echo $user->roles; ?></td>
                             <td class="px-4 py-2 text-center">
                                 <!-- Edit Button with Data -->
                                 <button
                                     class="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
-                                    onclick="openEditModal(<?php echo $row->id; ?>, '<?php echo $row->name; ?>', '<?php echo $row->email; ?>' , '<?php echo $row->roles; ?>')">
+                                    onclick="openEditModal(<?php echo $user->id; ?>, '<?php echo $user->name; ?>', '<?php echo $user->email; ?>' , '<?php echo $user->roles; ?>')">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
 
                                 <!-- Delete Button with Data -->
                                 <button
                                     class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    onclick="confirmDelete(<?php echo $row->id; ?>)">
+                                    onclick="confirmDelete(<?php echo $user->id; ?>)">
                                     <i class="fa-solid fa-trash"></i> Delete
                                 </button>
                             </td>
@@ -49,6 +50,7 @@
                 </tbody>
             </table>
             <!-- Table End -->
+
 
             <!-- pagination start -->
         <div class="flex justify-center mt-6">
@@ -62,14 +64,12 @@
                             </a>
                         </li>
                     <?php endif; ?>
-
                     <!-- Pagination Links -->
                     <?php
                     // Determine the page range to display
                     $pageRange = 2;
                     $startPage = max(1, $currentPage - floor($pageRange / 2));
                     $endPage = min($totalPages, $currentPage + floor($pageRange / 2));
-
                     // Add "Previous Ellipsis" if the range starts before 1
                     if ($startPage > 1) {
                         echo '<li><a href="/dashboard?page=1&searchQuery=' . urlencode($searchQuery) . '" class="px-4 py-2 text-indigo-600 hover:text-indigo-900">1</a></li>';
@@ -77,7 +77,6 @@
                             echo '<li><span class="px-4 py-2 text-gray-400">...</span></li>';
                         }
                     }
-
                     // Loop through the pages
                     for ($i = $startPage; $i <= $endPage; $i++) {
                         echo '<li>';
@@ -107,9 +106,7 @@
                 </ul>
             </nav>
         </div>
-
         <!-- pagination end -->
-
         </div>
 
         <!-- Edit User Modal -->
@@ -136,6 +133,78 @@
                 </form>
             </div>
         </div>
+
+
+        <!-- add user moal  -->
+            <div id="addModal" class="absolute w-full m-auto flex bg-gray-500 bg-opacity-50 hidden h-screen justify-center items-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Add User</h2>
+        <form id="addForm" action="<?= base_url('/adduser') ?>" method="POST">
+            <div class="mb-4">
+                <label for="addName" class="block text-gray-700">Name</label>
+                <input type="text" name="name" id="addName" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            </div>
+            <div class="mb-4">
+                <label for="addEmail" class="block text-gray-700">Email</label>
+                <input type="email" name="email" id="addEmail" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            </div>
+            <div class="mb-4">
+                <label for="addPassword" class="block text-gray-700">Password</label>
+                <input type="password" name="password" id="addPassword" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            </div>
+            <div class="mb-4">
+                <label for="addRole" class="block text-gray-700">Role</label>
+                <select name="roles" class="px-4 py-2">
+                                    <?php foreach ($roles as $role): ?>
+                                        <option value="<?= $role['roles']; ?>">
+                                            <?= ucfirst($role['roles']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+            </div>
+            <div class="flex justify-between">
+                <button type="button" onclick="closeAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- add user moal  -->
+            <div id="addModal" class="absolute w-full m-auto flex bg-gray-500 bg-opacity-50 hidden h-screen justify-center items-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Add User</h2>
+        <form id="addForm" action="<?= base_url('/adduser') ?>" method="POST">
+            <div class="mb-4">
+                <label for="addName" class="block text-gray-700">Name</label>
+                <input type="text" name="name" id="addName" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            </div>
+            <div class="mb-4">
+                <label for="addEmail" class="block text-gray-700">Email</label>
+                <input type="email" name="email" id="addEmail" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            </div>
+            <div class="mb-4">
+                <label for="addPassword" class="block text-gray-700">Password</label>
+                <input type="password" name="password" id="addPassword" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            </div>
+            <div class="mb-4">
+                <label for="addRole" class="block text-gray-700">Role</label>
+                <select name="roles" class="px-4 py-2">
+                                    <?php foreach ($roles as $role): ?>
+                                        <option value="<?= $role['roles']; ?>">
+                                            <?= ucfirst($role['roles']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+            </div>
+            <div class="flex justify-between">
+                <button type="button" onclick="closeAddModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
     </div>
 
                         
@@ -160,4 +229,15 @@
                 window.location.href = '/delete-user/' + id;
             }
         }
+
+
+        // Open the Add User Modal
+    function openAddModal() {
+        document.getElementById('addModal').classList.remove('hidden');
+    }
+
+    // Close the Add User Modal
+    function closeAddModal() {
+        document.getElementById('addModal').classList.add('hidden');
+    }
     </script>

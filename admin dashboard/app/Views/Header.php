@@ -59,9 +59,8 @@
         <div class="dropdown-content">
             <a href="/dashboard">Users</a>
             <a href="/accesslevel">Access Level</a>
-            <a href="/campaign">Campaign</a>
-            <a href="/showCampaign">show campaign</a>
-            <a href="/chat">chat</a>
+            <a href="/showCampaign">Campaign</a>
+            <a href="/chat">Chat</a>
         </div>
         
     </div>
