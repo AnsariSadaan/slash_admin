@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-const url = process.env.MONGOURL || "mongodb+srv://admin:admin@cluster0.fxkbz.mongodb.net/chat_message";
+const url = process.env.MONGOURL || "mongodb://localhost:27017/chat_message";
 
 let client;
 
