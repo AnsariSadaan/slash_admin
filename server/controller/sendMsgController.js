@@ -2,7 +2,7 @@ import { initCollection, initMongoDB } from "../config/db.js";
 
 
 const sendMessage = async (req, res) => {
-    const { sender, receiver, message } = req.body;
+    const { sender_name, receiver_name, sender, receiver, message } = req.body;
     try {
         const databaseName = await initMongoDB();
         const messageCollection = await initCollection(databaseName);
@@ -11,8 +11,8 @@ const sendMessage = async (req, res) => {
         // Check if a document for this pair of users exists
         const newMessage = {
             participants: [sender, receiver],
-            sender,
-            receiver,
+            sender_name, 
+            receiver_name,
             message,
             timestamp,
         };
@@ -36,7 +36,7 @@ export const getMessage = async (req, res) => {
         const messageCollection = await initCollection(databaseName);
 
         // fetch all message between sender and receiver
-        const message = await messageCollection.find({
+        const message = await messageCollection.find({ 
             participants: {$all: [sender, receiver]},
         }).sort({timestamp: 1}).toArray();
         
