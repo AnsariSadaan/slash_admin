@@ -30,16 +30,17 @@ const startServer = async () => {
 
     io.on("connection", (socket) => {
       socket.on("join", (data) => {
-          console.log(`${data.email} joined`);
-          socket.join(data.email);
+          console.log(`${data.name} joined`);
+          socket.join(data.name);
       });
   
       socket.on("send_message", (data) => {
-          const { sender, receiver, message } = data;
+          const { sender_name, receiver_name, sender, receiver, message } = data;
   
           // Emit the message to the receiver
-          socket.to(receiver).emit("receive_message", {
+          socket.to(receiver, receiver_name).emit("receive_message", {
               sender,
+              sender_name,
               message,
               timestamp: new Date(),
           });
