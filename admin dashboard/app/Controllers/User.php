@@ -18,35 +18,85 @@ class User extends BaseController
         $this->accessLevelModel = new AccessLevelModel();
     }
 
-    public function dashboard()
-    {
-        if (!$this->session->has('user')) {
-            return redirect()->to('/login');
-        }
-        // Get pagination and search parameters
-        $page = $this->request->getVar('page') ?? 1; // Default to page 1 if no page is set
-        $perPage = 2; // Define how many users per page
-        $searchQuery = $this->request->getVar('searchQuery') ?? '';
+    // public function dashboard()
+    // {
+    //     if (!$this->session->has('user')) {
+    //         return redirect()->to('/login');
+    //     }
+    //     // Get pagination and search parameters
+    //     $page = $this->request->getVar('page') ?? 1; // Default to page 1 if no page is set
+    //     $perPage = 2; // Define how many users per page
+    //     $searchQuery = $this->request->getVar('searchQuery') ?? '';
 
-        // Fetch data using the model
+    //     // Fetch data using the model
+    //     $users = $this->userModel->getPaginatedUsers($searchQuery, $page, $perPage);
+    //     $totalUsers = $this->userModel->countUsers($searchQuery);
+    //     $totalPages = ceil($totalUsers / $perPage);
+
+    //     // Fetch roles from the access_level table
+    //     $roles = $this->accessLevelModel->getAllRoles();
+
+    //     // Construct mainContent
+    //     $mainContent = view('dashboard', [
+    //         'users' => $users,
+    //         'totalPages' => $totalPages,
+    //         'currentPage' => $page,
+    //         'searchQuery' => $searchQuery,
+    //         'roles' => $roles, // Pass roles to the view
+    //     ]);
+
+    //     return view('Template', ['mainContent' => $mainContent]);
+    // }
+
+    public function dashboard()
+{
+    if (!$this->session->has('user')) {
+        return redirect()->to('/login');
+    }
+
+    // Fetch the logged-in user's details
+    $loggedInUser = $this->session->get('user');
+    
+    // Get the logged-in user's role
+    $role = $loggedInUser->roles;
+
+    // Get pagination and search parameters
+    $page = $this->request->getVar('page') ?? 1;
+    $perPage = 4;
+    $searchQuery = $this->request->getVar('searchQuery') ?? '';
+
+    // Filter users based on the logged-in role
+    if ($role === 'user') {
+        // Regular users can only see other regular users
+        $users = $this->userModel->getUsersByRole('user', $searchQuery, $page, $perPage);
+        $totalUsers = $this->userModel->countUsersByRole('user', $searchQuery);
+    } else {
+        // Admins can see all users
         $users = $this->userModel->getPaginatedUsers($searchQuery, $page, $perPage);
         $totalUsers = $this->userModel->countUsers($searchQuery);
-        $totalPages = ceil($totalUsers / $perPage);
-
-        // Fetch roles from the access_level table
-        $roles = $this->accessLevelModel->getAllRoles();
-
-        // Construct mainContent
-        $mainContent = view('dashboard', [
-            'users' => $users,
-            'totalPages' => $totalPages,
-            'currentPage' => $page,
-            'searchQuery' => $searchQuery,
-            'roles' => $roles, // Pass roles to the view
-        ]);
-
-        return view('Template', ['mainContent' => $mainContent]);
     }
+
+    // Pagination logic
+    $totalPages = ceil($totalUsers / $perPage);
+
+    // Fetch roles from the access_level table for display (admin can assign roles)
+    $roles = $this->accessLevelModel->getAllRoles();
+
+    // Pass data to the view
+    $mainContent = view('dashboard', [
+        'users' => $users,
+        'totalPages' => $totalPages,
+        'currentPage' => $page,
+        'searchQuery' => $searchQuery,
+        'roles' => $roles,  // Roles for Add/Edit User
+        'loggedInUser' => $loggedInUser,
+        'role' => $role
+    ]);
+
+    return view('Template', ['mainContent' => $mainContent]);
+}
+
+
 
     public function updateUser()
     {

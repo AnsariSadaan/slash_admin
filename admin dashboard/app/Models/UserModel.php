@@ -5,20 +5,20 @@ use CodeIgniter\Model;
 
 class UserModel extends Model
 {
-    protected $table            = 'users';
-    protected $primaryKey       = 'id';
+    protected $table = 'users';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'object';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'email', 'password', 'roles'];
+    protected $returnType = 'object';
+    protected $useSoftDeletes = false;
+    protected $protectFields = true;
+    protected $allowedFields = ['name', 'email', 'password', 'roles'];
     protected $useTimestamps = false;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
 
-
-    public function getAllUsers(){
+    public function getAllUsers()
+    {
         return $this->findAll();
     }
     /**
@@ -37,7 +37,6 @@ class UserModel extends Model
         return $this->insert($data);
     }
 
-
     public function updateUserById(int $id, array $data)
     {
         return $this->update($id, $data);
@@ -51,30 +50,49 @@ class UserModel extends Model
         return $this->delete($id);
     }
 
-
-    public function getPaginatedUsers(string $searchQuery = '', int $page = 1, int $perPage = 10)
+    // Get all users (for admin)
+    public function getPaginatedUsers($searchQuery, $page, $perPage)
     {
-        $offset = ($page - 1) * $perPage;
-
-        if ($searchQuery) {
-            return $this->like('name', $searchQuery)
-                ->orderBy('id', 'ASC')
-                ->findAll($perPage, $offset);
-        }
-
-        return $this->orderBy('id', 'ASC')
-            ->findAll($perPage, $offset);
+        return $this->db
+            ->table('users')
+            ->like('name', $searchQuery)
+            ->orLike('email', $searchQuery)
+            ->limit($perPage, ($page - 1) * $perPage)
+            ->get()
+            ->getResult();
     }
 
-    /**
-     * Count users with optional search query.
-     */
-    public function countUsers(string $searchQuery = '')
+    // Get users by role 'user' (for regular users)
+    public function getUsersByRole($role, $searchQuery, $page, $perPage)
     {
-        if ($searchQuery) {
-            return $this->like('name', $searchQuery)->countAllResults();
-        }
+        return $this->db
+            ->table('users')
+            ->where('roles', $role)
+            ->like('name', $searchQuery)
+            ->orLike('email', $searchQuery)
+            ->limit($perPage, ($page - 1) * $perPage)
+            ->get()
+            ->getResult();
+    }
 
-        return $this->countAll();
+    // Count all users (for admin)
+    public function countUsers($searchQuery)
+    {
+        return $this->db
+            ->table('users')
+            ->like('name', $searchQuery)
+            ->orLike('email', $searchQuery)
+            ->countAllResults();
+    }
+
+    // Count users by role 'user' (for regular users)
+    public function countUsersByRole($role, $searchQuery)
+    {
+        return $this->db
+            ->table('users')
+            ->where('roles', $role)
+            ->like('name', $searchQuery)
+            ->orLike('email', $searchQuery)
+            ->countAllResults();
     }
 }
