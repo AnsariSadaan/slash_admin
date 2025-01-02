@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\AccessLevelModel;
 use App\Models\CampaignModel;
 
 class Campaign extends BaseController
@@ -16,15 +17,27 @@ class Campaign extends BaseController
             return redirect()->to('/login');
         }
         $campaign_model = new CampaignModel();
+        $accessLevelModel = new AccessLevelModel();
+
+        // Fetch the logged-in user's details
+        $loggedInUser = $this->session->get('user');
+    
+        // Get the logged-in user's role
+        $role = $loggedInUser->roles;
 
         // Pagination setup
         $page = $this->request->getVar('page') ?? 1; // Default to page 1 if no page is set
         $perPage = 2; // Define how many users per page
         // Get search query from URL
+
+        $roles = $accessLevelModel->getAllRoles();
         $searchQuery = $this->request->getVar('searchQuery') ?? '';
         $campaignData = $campaign_model->getCampaigns($page, $perPage, $searchQuery);        
         $mainContent = view('showCampaign', [
             'campaign' => $campaignData['campaigns'],
+            'roles' => $roles,  // Roles for Add/Edit User
+            'loggedInUser' => $loggedInUser,
+            'role' => $role,
             'totalPages' => $campaignData['totalPages'],
             'currentPage' => $page,
             'searchQuery' => $searchQuery,

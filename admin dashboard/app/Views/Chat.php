@@ -121,6 +121,7 @@
 
     function selectReceiver(email, name) {
         selectedReceiver = email; // Set selectedReceiver when a user is clicked
+        selectReceiverName = name;
         document.getElementById('currentUserName').innerText = name; // Update the header with the selected user's name
         document.getElementById('currentUserImage').style.display = "block"; // Show user image
         document.getElementById('userStatus').style.display = "block"; // Show online status
@@ -131,7 +132,7 @@
         messagesDiv.innerHTML = "<p class='text-gray-500 text-center'>Loading messages...</p>";
 
         // Fetch and display the chat messages
-        fetchMessages(email);
+        fetchMessages(email, name);
     }
 
     async function fetchMessages(receiver, receiver_name) {
@@ -193,7 +194,8 @@
 
         const sender = "<?= session()->get('user')->email ?>";
         const sender_name = "<?= session()->get('user')->name ?>";
-        const receiver_name = "<?= session()->get('user')->name ?>";
+        const receiver_name = selectReceiverName;
+        console.log(receiver_name)
         const receiver = selectedReceiver;
 
         // Send message via API

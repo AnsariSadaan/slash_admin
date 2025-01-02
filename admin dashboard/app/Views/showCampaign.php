@@ -6,7 +6,9 @@
         <!-- Logout Link -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-semibold text-center text-gray-800">Campaign Details</h1>
+            <?php if ($role === 'admin'): ?>
             <button id="addCampaign" onclick="openAddModal()">+</button>
+            <?php endif; ?>
         </div>
 
         <!-- Table Start -->
