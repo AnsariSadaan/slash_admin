@@ -22,7 +22,9 @@
                         <td class="px-4 py-2 text-center"><?php echo $user->name; ?></td>
                         <td class="px-4 py-2 text-center"><?php echo $user->email; ?></td>
                         <td class="px-4 py-2 text-center"><?php echo $user->roles; ?></td>
+                        
                         <td class="px-4 py-2 text-center">
+                        <?php if($loggedInUser->roles === 'admin'): ?>
                             <form action="/update-role/<?php echo $user->id; ?>" method="POST">
                                 <select name="roles" class="px-4 py-2" onchange="this.form.submit()">
                                     <?php foreach ($roles as $role): ?>
@@ -32,6 +34,9 @@
                                     <?php endforeach; ?>
                                 </select>
                             </form>
+                            <?php else:?>
+                                <p class="text-gray-300">you dont have access</p>
+                                <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

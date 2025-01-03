@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class AccessLevelModel extends Model
+class UserCampaign extends Model
 {
-    protected $table            = 'access_level';
+    protected $table            = 'user_campaign';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['roles'];
+    protected $allowedFields    = ['user_id', 'campaign_id', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -28,8 +28,20 @@ class AccessLevelModel extends Model
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
+    protected $validationRules      = [
+        'user_id' => 'required|integer',
+        'campaign_id' => 'required|integer',
+    ];
+    protected $validationMessages   = [
+        'user_id' => [
+            'required' => 'The user ID is required.',
+            'integer' => 'The user ID must be an integer.',
+        ],
+        'campaign_id' => [
+            'required' => 'The campaign ID is required.',
+            'integer' => 'The campaign ID must be an integer.',
+        ],
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
@@ -45,21 +57,5 @@ class AccessLevelModel extends Model
     protected $afterDelete    = [];
 
 
-
-    public function getAllRoles()
-    {
-        return $this->findAll();
-    }
-
-    public function updateRole($id, $data)
-    {
-        return $this->db->table('users')->where('id', $id)->update($data);
-    }
-
-    public function isValidRole($role)
-    {
-        $roles = $this->getAllRoles();
-        $roleNames = array_column($roles, 'roles');
-        return in_array($role, $roleNames);
-    }
+    
 }

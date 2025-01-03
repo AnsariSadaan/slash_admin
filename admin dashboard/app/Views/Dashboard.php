@@ -7,7 +7,6 @@
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-semibold text-center text-gray-800">User Details</h1>
             <?php if ($role === 'admin'): ?>
-                
                 <button id="addUser" onclick="openAddModal()">+</button>
             <?php endif; ?>
         </div>
@@ -142,7 +141,7 @@
     <div id="addModal" class="absolute w-full m-auto flex bg-gray-500 bg-opacity-50 hidden h-screen justify-center items-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
             <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Add User</h2>
-            <form id="addForm" action="<?= base_url('/adduser') ?>" method="POST">
+            <form id="addForm" action="<?= base_url('Adduser/adduser') ?>" method="POST">
                 <div class="mb-4">
                     <label for="addName" class="block text-gray-700">Name</label>
                     <input type="text" name="name" id="addName" class="w-full p-2 border border-gray-300 rounded mt-2" required>
@@ -178,7 +177,7 @@
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
             <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Add User</h2>
             <form id="addForm" action="<?= base_url(
-                                            '/adduser'
+                                            'Adduser/adduser'
                                         ) ?>" method="POST">
                 <div class="mb-4">
                     <label for="addName" class="block text-gray-700">Name</label>

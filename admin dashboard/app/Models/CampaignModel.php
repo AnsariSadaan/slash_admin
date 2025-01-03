@@ -62,7 +62,7 @@ class CampaignModel extends Model
         return $this->update($id, $data);
     }
 
-    
+
 
     public function getCampaigns($page, $perPage, $searchQuery = '')
     {
@@ -85,5 +85,15 @@ class CampaignModel extends Model
             'campaigns' => $campaigns,
             'totalPages' => $totalPages,
         ];
+    }
+
+
+    public function getAssignedCampaignsByUser($id)
+    {
+        return $this->db->table('campaign')
+            ->join('user_campaign', 'campaign.id = user_campaign.campaign_id')
+            ->where('user_campaign.user_id', $id)
+            ->get()
+            ->getResult();
     }
 }
