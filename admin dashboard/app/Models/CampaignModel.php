@@ -86,14 +86,4 @@ class CampaignModel extends Model
             'totalPages' => $totalPages,
         ];
     }
-
-
-    public function getAssignedCampaignsByUser($id)
-    {
-        return $this->db->table('campaign')
-            ->join('user_campaign', 'campaign.id = user_campaign.campaign_id')
-            ->where('user_campaign.user_id', $id)
-            ->get()
-            ->getResult();
-    }
 }

@@ -26,7 +26,6 @@
                 <?php foreach ($campaign as $row) {
                     // echo print_r($campaign); die;
                 ?>
-
                     <tr class="border-b">
                         <td class="px-4 py-2 text-center"><?php echo $row->id; ?></td>
                         <td class="px-4 py-2 text-center"><?php echo $row->name; ?></td>
@@ -115,10 +114,10 @@
 
     </div>
     
-    <!-- Edit User Modal -->
+    <!-- Edit Campaign Modal -->
     <div id="editModal" class="absolute w-full m-auto flex bg-gray-500 bg-opacity-50 hidden h-screen justify-center items-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Edit User</h2>
+            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Edit Campaign</h2>
             <form id="editForm" action="/update-campaign" method="POST">
                 <div class="mb-4">
                     <label for="editId" class="block text-gray-700">Id</label>
@@ -149,7 +148,7 @@
     <!-- add campaign modal -->
 <div id="addModal" class="absolute w-full m-auto flex bg-gray-500 bg-opacity-50 hidden h-screen justify-center items-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Edit User</h2>
+            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Add Campaign</h2>
             <form id="addForm" action="<?= base_url('/campaign/store')?>" method="POST">
                 <?= csrf_field() ?>
                 <div class="mb-4">
@@ -172,11 +171,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
 
 
 <script>
