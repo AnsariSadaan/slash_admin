@@ -19,7 +19,9 @@
                     <th class="px-4 py-2 text-center">Name</th>
                     <th class="px-4 py-2 text-center">Email</th>
                     <th class="px-4 py-2 text-center">Roles</th>
+                    <?php if ($role === 'admin'): ?>
                     <th class="px-4 py-2 text-center">Actions</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -32,18 +34,13 @@
                             <td class="px-4 py-2 text-center"><?php echo $user->name; ?></td>
                             <td class="px-4 py-2 text-center"><?php echo $user->email; ?></td>
                             <td class="px-4 py-2 text-center"><?php echo $user->roles; ?></td>
+                            <?php if ($role === 'admin'): ?>
                             <td class="px-4 py-2 text-center">
-                                <?php if ($role === 'admin'): ?>
                                     <button class="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2" onclick="openEditModal(<?php echo $user->id; ?>, '<?php echo $user->name; ?>', '<?php echo $user->email; ?>', '<?php echo $user->roles; ?>')">
-                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        <i class="fa-solid fa-pen-to-square"></i> 
                                     </button>
                                     <button class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500" onclick="confirmDelete(<?php echo $user->id; ?>)">
-                                        <i class="fa-solid fa-trash"></i> Delete
-                                    </button>
-                                <?php elseif (($role === 'user' || $role === 'supervisor' || $role === 'teamleader') && $user->id === $loggedInUser->id): ?>
-                                    <!-- Regular user can only edit their own data -->
-                                    <button class="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2" onclick="openEditModal(<?php echo $user->id; ?>, '<?php echo $user->name; ?>', '<?php echo $user->email; ?>', '<?php echo $user->roles; ?>')">
-                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        <i class="fa-solid fa-trash"></i> 
                                     </button>
                                 <?php endif; ?>
                             </td>

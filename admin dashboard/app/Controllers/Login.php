@@ -20,7 +20,7 @@ class Login extends BaseController
             if ($user) {
                 if (password_verify($password, $user->password)) {
                         $this->session->set('user', $user);
-                        return redirect()->to('/dashboard')->with('success', 'Login successful!');
+                        return redirect()->to('/chat')->with('success', 'Login successful!');
                 } else {
                     return redirect()->back()->with('error', 'Invalid password. Please try again.');
                 }

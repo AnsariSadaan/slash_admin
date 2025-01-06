@@ -46,28 +46,54 @@
         </div>
         <div class="flex items-center space-x-4">
             <h1 class="text-lg font-medium"><?= ucfirst(
-                session()->get('user')->name
-            ) ?></h1>
+                                                session()->get('user')->name
+                                            ) ?></h1>
             <a href="/logout" class="text-white px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700">Logout</a>
         </div>
     </nav>
-        <div class="flex justify-center p-2">
-        <a class="px-4 py-2">Dashboard</a>
-        <a class="px-4 py-2">Live</a>
-        <a class="px-4 py-2">Reports</a>
-        <a class="px-4 py-2">Conversation</a>
-        <a class="px-4 py-2">Contacts</a>
-        <div class="dropdown p-2">
-        <a class="px-4 py-2" href="#">Operation</a>
-        <div class="dropdown-content">
-            <a href="/dashboard">Users</a>
-            <a href="/accesslevel">Access Level</a>
-            <a href="/showCampaign">Campaign</a>
-            <a href="/chat">Chat</a>
-        </div>
-        
+
+
+    <div class="flex justify-center p-2">
+        <?php if (session()->get('user')->roles === 'admin'): ?>
+            <a class="px-4 py-2">Dashboard</a>
+            <a class="px-4 py-2">Live</a>
+            <a class="px-4 py-2">Reports</a>
+            <div class="dropdown p-2">
+                <a class="px-4 py-2">Conversation</a>
+                <div class="dropdown-content">
+                    <a href="/chat">Chat</a>
+                </div>
+            </div>
+            <a class="px-4 py-2">Contacts</a>
+            <div class="dropdown p-2">
+                <a class="px-4 py-2" href="#">Operation</a>
+                <div class="dropdown-content">
+                    <a href="/dashboard">Users</a>
+                    <a href="/accesslevel">Access Level</a>
+                    <a href="/showCampaign">Campaign</a>
+                </div>
+
+            </div>
+            <a class="px-4 py-2">Advanced Settings</a>
+            <a class="px-4 py-2">Custom Reports</a>
+
+
+        <?php elseif ((session()->get('user')->roles === 'user') || (session()->get('user')->roles === 'supervisor') || (session()->get('user')->roles === 'teamleader')): ?>
+            <a class="px-4 py-2">Dashboard</a>
+            <div class="dropdown p-2">
+                <a class="px-4 py-2">Conversation</a>
+                <div class="dropdown-content">
+                    <a href="/chat">Chat</a>
+                </div>
+            </div>
+            <div class="dropdown p-2">
+                <a class="px-4 py-2" href="#">Operation</a>
+                <div class="dropdown-content">
+                    <a href="/dashboard">Users</a>
+                    <a href="/accesslevel">Access Level</a>
+                    <a href="/showCampaign">Campaign</a>
+                </div>
+
+            </div>
+        <?php endif; ?>
     </div>
-        <a class="px-4 py-2">Advanced Settings</a>
-        <a class="px-4 py-2">Custom Reports</a>
-    </div>
-    

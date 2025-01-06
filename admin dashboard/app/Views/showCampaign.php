@@ -19,7 +19,9 @@
                     <th class="px-4 py-2 text-center">Name</th>
                     <th class="px-4 py-2 text-center">Description</th>
                     <th class="px-4 py-2 text-center">Client</th>
+                    <?php if($loggedInUser->roles === 'admin'): ?>
                     <th class="px-4 py-2 text-center">Actions</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -31,21 +33,23 @@
                         <td class="px-4 py-2 text-center"><?php echo $row->name; ?></td>
                         <td class="px-4 py-2 text-center"><?php echo $row->description; ?></td>
                         <td class="px-4 py-2 text-center"><?php echo $row->client; ?></td>
+                        <?php if($loggedInUser->roles === 'admin'): ?>
                         <td class="px-4 py-2 text-center">
                             <!-- Edit Button with Data -->
                             <button
                                 class="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
                                 onclick="openEditModal(<?php echo $row->id; ?>, '<?php echo $row->name; ?>', '<?php echo $row->description; ?>' , '<?php echo $row->client; ?>')">
-                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                                <i class="fa-solid fa-pen-to-square"></i> 
                             </button>
 
                             <!-- Delete Button with Data -->
                             <button
                                 class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                                 onclick="confirmDelete(<?php echo $row->id; ?>)">
-                                <i class="fa-solid fa-trash"></i> Delete
+                                <i class="fa-solid fa-trash"></i> 
                             </button>
                         </td>
+                        <?php endif; ?>
                     </tr>
                 <?php } ?>
             </tbody>
