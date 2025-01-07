@@ -11,6 +11,7 @@ $routes->match(['GET', 'POST'], '/adduser', 'Adduser::adduser');
 
 $routes->match(['GET', 'POST'], '/logout', 'Logout::Logout');
 $routes->match(['GET', 'POST'], '/login', 'Login::Login');
+$routes->match(['GET', 'POST'], '/auditlog', 'AuditLogController::Auditlog');
 
 
 

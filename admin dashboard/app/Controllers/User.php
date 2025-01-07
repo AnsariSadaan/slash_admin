@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\AccessLevelModel;
+use App\Models\AuditLogModel;
 use App\Models\UserModel;
 
 class User extends BaseController
@@ -98,35 +99,108 @@ class User extends BaseController
 
 
 
+    // public function updateUser()
+    // {
+
+    //     if (!$this->session->has('user')) {
+    //         return redirect()->to('/login');
+    //     }
+
+    //     $user_model = new UserModel();
+    //     // Get the submitted data
+    //     $id = $this->request->getPost('id');
+    //     $name = $this->request->getPost('name');
+    //     $email = $this->request->getPost('email');
+
+    //     // Prepare data for update
+    //     $updatedData = [];
+    //     if ($name) {
+    //         $updatedData['name'] = $name;
+    //     }
+    //     if ($email) {
+    //         $updatedData['email'] = $email;
+    //     }
+
+    //     // Update the user via the model
+    //     $user_model->updateUserById($id, $updatedData);
+
+    //     return redirect()
+    //         ->to('/dashboard')
+    //         ->with('success', 'User details updated successfully');
+    // }
+
+
     public function updateUser()
-    {
+{
+    // Check if the logged-in user is authenticated
+    if (!$this->session->has('user')) {
+        return redirect()->to('/login');
+    }
 
-        if (!$this->session->has('user')) {
-            return redirect()->to('/login');
-        }
+    // Get the logged-in user details
+    $loggedinUser = $this->session->get('user');
+    $loggedinUserId = $loggedinUser->id;
+    $loggedinUserName = $loggedinUser->name;
 
+    if ($this->request->getPost()) {
         $user_model = new UserModel();
+        $auditlog_model = new AuditLogModel();
+
         // Get the submitted data
         $id = $this->request->getPost('id');
         $name = $this->request->getPost('name');
         $email = $this->request->getPost('email');
 
-        // Prepare data for update
+        // Fetch the existing user details
+        $existingUser = $user_model->getUserById($id); // Assuming getUserById exists in the UserModel
+
+        if (!$existingUser) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
+        // Prepare data for update and audit log
         $updatedData = [];
-        if ($name) {
+        $auditLogs = [];
+
+        if ($name && $name !== $existingUser['name']) {
             $updatedData['name'] = $name;
+            $auditLogs[] = 'Name was updated. Previous name: "' . $existingUser['name'] . '", Updated name: "' . $name . '".';
         }
-        if ($email) {
+
+        if ($email && $email !== $existingUser['email']) {
             $updatedData['email'] = $email;
+            $auditLogs[] = 'Email was updated. Previous email: "' . $existingUser['email'] . '", Updated email: "' . $email . '".';
         }
 
-        // Update the user via the model
-        $user_model->updateUserById($id, $updatedData);
+        // If there are changes, proceed with the update
+        if (!empty($updatedData)) {
+            $user_model->updateUserById($id, $updatedData); // Assuming updateUserById exists in the UserModel
 
-        return redirect()
-            ->to('/dashboard')
-            ->with('success', 'User details updated successfully');
+            // Log the changes in the audit log
+            foreach ($auditLogs as $log) {
+                $auditData = [
+                    'datetime' => date('Y-m-d H:i:s'),
+                    'action' => 'update',
+                    'user_id' => $loggedinUserId,
+                    'name' => $loggedinUserName,
+                    'logs' => $log,
+                ];
+
+                $auditlog_model->saveAuditLog($auditData);
+            }
+
+            return redirect()
+                ->to('/dashboard')
+                ->with('success', 'User details updated successfully.');
+        } else {
+            return redirect()
+                ->back()
+                ->with('info', 'No changes were made.');
+        }
     }
+
+    return redirect()->back()->with('error', 'Invalid request.');
+}
 
     public function deleteUser($id)
     {

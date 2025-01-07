@@ -58,7 +58,9 @@
 
 
 // export default sendMessage;
-
+// GET messages:user1:user2 | jq .
+// GET messages:user1:user2
+// GET messages:sender:receiver
 
 import { initCollection, initMongoDB } from "../config/db.js";
 import { messageQueue } from "../config/queue.js";

@@ -57,7 +57,12 @@
         <?php if (session()->get('user')->roles === 'admin'): ?>
             <a class="px-4 py-2">Dashboard</a>
             <a class="px-4 py-2">Live</a>
-            <a class="px-4 py-2">Reports</a>
+            <div class="dropdown p-2">
+                <a class="px-2 py-1">Report</a>
+                <div class="dropdown-content">
+                    <a href="/auditlog" class="text-sm">Audit Logs</a>
+                </div>
+            </div>
             <div class="dropdown p-2">
                 <a class="px-4 py-2">Conversation</a>
                 <div class="dropdown-content">
