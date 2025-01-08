@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use CodeIgniter\Model;
@@ -42,9 +43,17 @@ class UserModel extends Model
         return $this->update($id, $data);
     }
 
+    
+
+    public function getUserById(int $id)
+    {
+        return $this->find($id);
+    }
+
     /**
      * Delete user by ID.
      */
+
     public function deleteUserById(int $id)
     {
         return $this->delete($id);
